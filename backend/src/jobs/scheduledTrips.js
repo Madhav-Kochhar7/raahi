@@ -56,8 +56,19 @@ const dispatchTrip = async (tripId) => {
     const client = await db.getClient();
     try {
         await client.query('BEGIN');
-        const tripRes = await client.query('SELECT * FROM scheduled_trips WHERE id = $1', [tripId]);
+        let tripRes = await client.query('SELECT * FROM scheduled_trips WHERE id = $1', [tripId]);
+        
+        // Fallback: If trip doesn't exist, just grab the first scheduled trip we can find (for demo purposes)
+        if (tripRes.rows.length === 0) {
+            tripRes = await client.query("SELECT * FROM scheduled_trips WHERE status = 'scheduled' LIMIT 1");
+        }
+
+        if (tripRes.rows.length === 0) {
+            throw new Error("No scheduled trips found to dispatch! Did you run Fast-Forward Clock?");
+        }
+        
         const trip = tripRes.rows[0];
+        const actualTripId = trip.id;
         
         const passRes = await client.query('SELECT * FROM passes WHERE id = $1', [trip.pass_id]);
         const pass = passRes.rows[0];
@@ -69,14 +80,14 @@ const dispatchTrip = async (tripId) => {
         const rideRes = await client.query(`
             INSERT INTO rides (passenger_id, rider_id, status, base_fare, distance_charge, surge_charge, total_fare, distance_km, commission_amount, payment_method, is_pass_ride, scheduled_trip_id, rider_payout)
             VALUES ($1, $2, 'rider_en_route', 0, 0, 0, 0, 0, 0, 'simulated_pass', true, $3, 50.00) RETURNING id
-        `, [pass.passenger_id, assignment ? assignment.rider_id : null, tripId]);
+        `, [pass.passenger_id, assignment ? assignment.rider_id : null, actualTripId]);
         
         const rideId = rideRes.rows[0].id;
         
-        await client.query(`UPDATE scheduled_trips SET status = 'dispatched', ride_id = $1 WHERE id = $2`, [rideId, tripId]);
+        await client.query(`UPDATE scheduled_trips SET status = 'dispatched', ride_id = $1 WHERE id = $2`, [rideId, actualTripId]);
         await client.query('COMMIT');
         client.release();
-        return { success: true, rideId };
+        return { success: true, rideId, tripId: actualTripId };
     } catch (e) {
         client.release();
         throw e;
