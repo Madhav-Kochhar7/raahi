@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from 'shared';
-import { MessageSquare, Send } from 'lucide-react';
+import { MessageSquare, Send, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const Chat: React.FC = () => {
@@ -18,7 +17,6 @@ export const Chat: React.FC = () => {
         setInput('');
         setLoading(true);
 
-        // Simulated OpenAI integration for chatbot since we don't have a real backend chat route configured
         setTimeout(() => {
             let reply = "I can help with that. Could you please provide more details?";
             const lower = currentInput.toLowerCase();
@@ -36,44 +34,51 @@ export const Chat: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen relative bg-[var(--dark-bg)]">
-            <div className="p-4 bg-[var(--dark-panel)] border-b border-[var(--neon-blue)] z-10 flex items-center justify-between">
-                <div className="font-bold text-[var(--neon-blue)] tracking-widest flex items-center gap-2">
-                    <MessageSquare size={18} /> AI ASSISTANT
+        <div className="flex flex-col h-screen relative bg-bg-app">
+            <div className="p-4 bg-surface-elevated border-b border-border-subtle z-10 flex items-center justify-between shadow-sm">
+                <div className="font-bold text-primary tracking-widest flex items-center gap-2 text-sm uppercase">
+                    <MessageSquare size={18} /> AI Assistant
                 </div>
-                <button className="text-[var(--text-light)] text-xs uppercase hover:text-white" onClick={() => navigate('/')}>Close</button>
+                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface text-text-muted hover:text-text-primary transition-colors" onClick={() => navigate('/')}>
+                    <X size={24} />
+                </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 pb-32">
                 {messages.map((msg, i) => (
                     <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[80%] p-3 rounded-lg text-sm ${msg.sender === 'user' ? 'bg-[var(--neon-blue)] text-black rounded-tr-none' : 'bg-gray-800 text-white rounded-tl-none border border-gray-700'}`}>
+                        <div className={`max-w-[85%] p-4 text-[15px] leading-relaxed font-medium ${msg.sender === 'user' ? 'bg-primary text-bg-app rounded-[24px] rounded-tr-[4px] glow-primary' : 'bg-surface-elevated text-text-primary rounded-[24px] rounded-tl-[4px] border border-border-subtle shadow-sm'}`}>
                             {msg.text}
                         </div>
                     </div>
                 ))}
                 {loading && (
                     <div className="flex justify-start">
-                        <div className="bg-gray-800 border border-gray-700 p-3 rounded-lg rounded-tl-none flex gap-1">
-                            <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce" />
-                            <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce" style={{animationDelay: '0.1s'}} />
-                            <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce" style={{animationDelay: '0.2s'}} />
+                        <div className="bg-surface-elevated border border-border-subtle p-4 rounded-[24px] rounded-tl-[4px] flex gap-1.5 shadow-sm items-center h-12">
+                            <div className="w-2 h-2 rounded-full bg-primary animate-bounce" />
+                            <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{animationDelay: '0.15s'}} />
+                            <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{animationDelay: '0.3s'}} />
                         </div>
                     </div>
                 )}
             </div>
 
-            <div className="p-4 bg-[var(--dark-panel)] border-t border-gray-800">
-                <div className="flex gap-2">
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-surface-elevated/95 backdrop-blur-md border-t border-border-subtle pb-8">
+                <div className="flex gap-3 max-w-lg mx-auto relative">
                     <input 
                         type="text" 
                         value={input}
                         onChange={e => setInput(e.target.value)}
                         onKeyPress={e => e.key === 'Enter' && handleSend()}
                         placeholder="Type a message..."
-                        className="flex-1 bg-[#11151c] border border-gray-800 rounded p-3 text-white focus:border-[var(--neon-blue)] outline-none text-sm"
+                        className="flex-1 bg-bg-app border border-border-subtle rounded-full py-4 pl-6 pr-16 text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-text-muted font-medium"
                     />
-                    <Button onClick={handleSend} className="px-4"><Send size={18} /></Button>
+                    <button 
+                        onClick={handleSend} 
+                        className={`absolute right-2 top-2 bottom-2 w-10 bg-primary text-bg-app rounded-full flex items-center justify-center transition-all ${input.trim() ? 'opacity-100 hover:bg-primary-dark cursor-pointer' : 'opacity-50 cursor-default'}`}
+                    >
+                        <Send size={18} className="ml-0.5" />
+                    </button>
                 </div>
             </div>
         </div>

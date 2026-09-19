@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { api, Button, MapView } from 'shared';
+import { Navigation, Phone, MessageSquare, Check, HandHeart, X } from 'lucide-react';
 
 export const ActiveRide: React.FC = () => {
     const { id } = useParams();
@@ -18,15 +19,13 @@ export const ActiveRide: React.FC = () => {
                 setStatus('arrived');
             } else if (status === 'arrived') {
                 if (otp.length !== 4) {
-                    setError('Please enter 4-digit OTP');
+                    setError('Please enter 4-digit PIN');
                     return;
                 }
-                // Simulate start API
                 try { await api.startRide(Number(id), otp); } catch(e) { console.warn("API start failed, simulating", e) }
                 setStatus('in_progress');
                 setError('');
             } else if (status === 'in_progress') {
-                // Simulate complete API
                 try { await api.completeRide(Number(id)); } catch(e) { console.warn("API complete failed, simulating", e) }
                 setStatus('completed');
             } else if (status === 'completed') {
@@ -38,61 +37,99 @@ export const ActiveRide: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen">
-            <div className="flex-1 relative">
+        <div className="flex flex-col h-screen relative bg-bg-app overflow-hidden">
+            <div className="absolute inset-0 z-0">
                 <MapView lat={30.48} lng={76.59} className="w-full h-full rounded-none border-none" />
                 
                 {/* Status Overlay */}
-                <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/80 px-4 py-2 rounded-full border border-[var(--neon-blue)] text-[var(--neon-blue)] font-bold text-sm tracking-widest uppercase">
-                    {status.replace('_', ' ')}
+                <div className="absolute top-12 left-1/2 -translate-x-1/2 bg-surface-elevated/90 backdrop-blur-md px-6 py-3 rounded-full border border-border-subtle shadow-lg flex items-center gap-3 z-20">
+                    <Navigation size={18} className="text-primary" />
+                    <span className="text-primary font-bold text-sm tracking-widest uppercase">
+                        {status.replace('_', ' ')}
+                    </span>
                 </div>
+
+                {/* Cancel Button */}
+                {status !== 'completed' && status !== 'in_progress' && (
+                    <button onClick={() => navigate('/')} className="absolute top-12 right-6 w-12 h-12 bg-surface-elevated/90 backdrop-blur rounded-full flex items-center justify-center border border-border-subtle shadow-lg text-text-muted hover:text-text-primary">
+                        <X size={24} />
+                    </button>
+                )}
             </div>
 
-            <div className="bg-[var(--dark-panel)] border-t border-[var(--neon-blue)] shadow-[0_-5px_20px_rgba(0,243,255,0.2)] rounded-t-2xl p-6">
-                <div className="flex justify-between items-center mb-6">
-                    <div>
-                        <div className="text-xl font-bold">₹{Number(ride.total_fare).toFixed(2)}</div>
-                        <div className="text-sm text-gray-400">Cash Payment</div>
-                    </div>
-                    <div className="text-right">
-                        <div className="font-bold text-[var(--neon-pink)] uppercase text-sm">Passenger</div>
-                        <div className="text-sm text-gray-300">+91 99XXXXXX</div>
-                    </div>
+            <div className="absolute bottom-0 left-0 right-0 bg-bg-app rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-20 pb-8 pt-2">
+                <div className="w-full flex justify-center pb-4">
+                    <div className="w-12 h-1 bg-border-subtle rounded-full"></div>
                 </div>
 
-                <div className="flex flex-col gap-4 mb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 rounded-full bg-[var(--neon-pink)] shadow-[0_0_10px_var(--neon-pink)]" />
-                        <div className="text-sm">{ride.pickup_address}</div>
+                <div className="px-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <div className="text-3xl font-light text-primary">₹{Number(ride.total_fare).toFixed(2)}</div>
+                            <div className="text-xs text-text-muted font-bold uppercase tracking-wider mt-1">Cash Payment</div>
+                        </div>
+                        <div className="flex gap-2">
+                            <button className="w-12 h-12 rounded-full bg-surface-elevated flex items-center justify-center border border-border-subtle text-text-primary hover:bg-surface">
+                                <MessageSquare size={20} />
+                            </button>
+                            <button className="w-12 h-12 rounded-full bg-surface-elevated flex items-center justify-center border border-border-subtle text-text-primary hover:bg-surface">
+                                <Phone size={20} />
+                            </button>
+                        </div>
                     </div>
-                    {status === 'in_progress' && (
-                        <div className="flex items-center gap-3">
-                            <div className="w-3 h-3 rounded-full bg-[var(--neon-blue)] shadow-[0_0_10px_var(--neon-blue)]" />
-                            <div className="text-sm">{ride.drop_address}</div>
+
+                    <div className="bg-surface-elevated rounded-2xl p-4 border border-border-subtle mb-6">
+                        <div className={`flex items-start gap-4 ${status === 'in_progress' ? 'mb-4 relative' : ''}`}>
+                            {status === 'in_progress' && <div className="absolute left-[7px] top-5 bottom-0 w-0.5 bg-border-subtle -z-10"></div>}
+                            <div className={`w-4 h-4 rounded-full flex-shrink-0 mt-0.5 ${status === 'in_progress' ? 'bg-primary glow-primary' : 'bg-secondary'}`} />
+                            <div>
+                                <div className="text-xs text-text-muted font-bold uppercase tracking-wider mb-1">
+                                    {status === 'in_progress' ? 'Picked up from' : 'Navigating to Pickup'}
+                                </div>
+                                <div className="text-sm font-bold">{ride.pickup_address}</div>
+                            </div>
+                        </div>
+                        {status === 'in_progress' && (
+                            <div className="flex items-start gap-4">
+                                <div className="w-4 h-4 rounded-full bg-secondary flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <div className="text-xs text-text-muted font-bold uppercase tracking-wider mb-1">Dropoff</div>
+                                    <div className="text-sm font-bold">{ride.drop_address}</div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {error && <div className="text-secondary bg-secondary/10 p-3 rounded-xl text-sm font-bold text-center mb-4">{error}</div>}
+
+                    {status === 'arrived' && (
+                        <div className="mb-6">
+                            <label className="block text-xs text-text-muted font-bold uppercase tracking-wider text-center mb-3">Ask passenger for PIN</label>
+                            <input 
+                                type="text" 
+                                placeholder="----" 
+                                className="w-full bg-bg-app border-2 border-border-subtle rounded-xl p-4 text-center text-3xl tracking-[1em] font-mono text-primary focus:border-primary outline-none transition-all placeholder:text-border-subtle"
+                                value={otp}
+                                onChange={e => setOtp(e.target.value.replace(/[^0-9]/g, '').substring(0,4))}
+                            />
                         </div>
                     )}
+
+                    <Button fullWidth onClick={handleAction} className="py-4 text-lg mb-2">
+                        {status === 'en_route' && 'Tap when Arrived'}
+                        {status === 'arrived' && (
+                            <div className="flex items-center justify-center gap-2">
+                                <Check size={20} /> Verify PIN & Start Ride
+                            </div>
+                        )}
+                        {status === 'in_progress' && 'Complete Ride'}
+                        {status === 'completed' && (
+                            <div className="flex items-center justify-center gap-2">
+                                <HandHeart size={20} /> Finish & Go Online
+                            </div>
+                        )}
+                    </Button>
                 </div>
-
-                {error && <div className="text-red-500 text-sm mb-4 font-bold">{error}</div>}
-
-                {status === 'arrived' && (
-                    <div className="mb-4">
-                        <input 
-                            type="text" 
-                            placeholder="Enter 4-digit PIN from Passenger" 
-                            className="w-full bg-[#11151c] border border-gray-800 rounded p-4 text-center text-xl tracking-[0.5em] font-mono text-white focus:border-[var(--neon-blue)] outline-none"
-                            value={otp}
-                            onChange={e => setOtp(e.target.value.replace(/[^0-9]/g, '').substring(0,4))}
-                        />
-                    </div>
-                )}
-
-                <Button fullWidth onClick={handleAction} className="py-4 text-lg">
-                    {status === 'en_route' && 'Tap when Arrived'}
-                    {status === 'arrived' && 'Start Ride'}
-                    {status === 'in_progress' && 'Complete Ride'}
-                    {status === 'completed' && 'Back to Map'}
-                </Button>
             </div>
         </div>
     );

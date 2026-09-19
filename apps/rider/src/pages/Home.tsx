@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, MapView, Button, Card, Badge } from 'shared';
-import { Power, Flame } from 'lucide-react';
+import { Power, Flame, CalendarDays, UserCircle, Map as MapIcon } from 'lucide-react';
 
 export const Home: React.FC = () => {
     const navigate = useNavigate();
@@ -19,12 +19,9 @@ export const Home: React.FC = () => {
         let interval: any;
         if (isOnline) {
             interval = setInterval(() => {
-                // Mock pinging a ride request
-                // In a real app we'd poll or use WS
-                // For demo, we just randomly pop up a ride request
                 if (Math.random() > 0.8 && !incomingRide) {
                     setIncomingRide({
-                        id: 1, // Mock ride ID (assume 1 was created by script)
+                        id: 1, 
                         pickup_address: "Model Town Gate",
                         drop_address: "College Main Gate",
                         total_fare: 65.00,
@@ -40,8 +37,6 @@ export const Home: React.FC = () => {
 
     const handleAccept = async () => {
         try {
-            // Need a valid ride ID in DB, we assume ID 1 exists or fails gracefully
-            // Let's navigate to active ride directly for UI demo purposes if API fails
             try {
                 await api.acceptRide(incomingRide.id);
             } catch(e) { console.warn("API accept failed, simulating acceptance for demo", e) }
@@ -52,24 +47,31 @@ export const Home: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen relative">
+        <div className="flex flex-col h-screen relative bg-bg-app overflow-hidden">
             {/* Header */}
-            <div className="p-4 bg-[var(--dark-panel)] border-b border-gray-800 flex justify-between items-center z-10">
-                <div className="font-bold text-[var(--neon-pink)] tracking-widest flex items-center gap-4">
-                    RAAHI RIDER
-                    <button className="text-[var(--text-light)] text-xs uppercase hover:text-white" onClick={() => navigate('/schedule')}>Schedule</button>
+            <div className="absolute top-0 left-0 right-0 p-4 pt-6 z-20 flex justify-between items-center bg-gradient-to-b from-bg-app/80 to-transparent">
+                <div className="w-10 h-10 bg-surface-elevated/90 backdrop-blur rounded-full flex items-center justify-center border border-border-subtle shadow-lg">
+                    <UserCircle size={20} className="text-text-primary" />
                 </div>
-                <button 
+                
+                <div 
                     onClick={() => setIsOnline(!isOnline)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold uppercase text-xs tracking-wider transition-all ${isOnline ? 'bg-[var(--neon-blue)] text-black shadow-[0_0_15px_var(--neon-blue)]' : 'bg-gray-800 text-gray-400'}`}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold uppercase text-xs tracking-wider transition-all cursor-pointer shadow-xl border ${isOnline ? 'bg-primary text-bg-app border-primary glow-primary' : 'bg-surface-elevated text-text-muted border-border-subtle'}`}
                 >
-                    <Power size={14} />
-                    {isOnline ? 'Online' : 'Offline'}
-                </button>
+                    <Power size={16} className={isOnline ? '' : 'text-text-muted'} />
+                    {isOnline ? 'Online' : 'Go Online'}
+                </div>
+
+                <div 
+                    onClick={() => navigate('/schedule')}
+                    className="w-10 h-10 bg-surface-elevated/90 backdrop-blur rounded-full flex items-center justify-center border border-border-subtle shadow-lg cursor-pointer hover:bg-surface transition-colors"
+                >
+                    <CalendarDays size={18} className="text-text-primary" />
+                </div>
             </div>
 
             {/* Map Area */}
-            <div className="flex-1 relative">
+            <div className="absolute inset-0 z-0">
                 <MapView 
                     lat={30.48} lng={76.59} 
                     className="w-full h-full rounded-none border-none"
@@ -78,48 +80,58 @@ export const Home: React.FC = () => {
                 
                 {/* Hotspot overlay */}
                 {isOnline && hotspots.length > 0 && (
-                    <div className="absolute top-4 left-4 right-4 z-10">
-                        <Card className="bg-black/80 backdrop-blur border border-[var(--neon-pink)] p-3">
-                            <div className="flex items-center gap-2 text-[var(--neon-pink)] mb-2">
+                    <div className="absolute top-24 left-1/2 -translate-x-1/2 z-10 w-auto whitespace-nowrap">
+                        <div className="bg-surface-elevated/90 backdrop-blur-md border border-border-subtle rounded-full p-1.5 flex items-center gap-2 shadow-lg pr-4">
+                            <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center text-secondary">
                                 <Flame size={16} />
-                                <span className="font-bold text-sm tracking-wider">DEMAND HOTSPOTS</span>
                             </div>
-                            <div className="flex gap-2 overflow-x-auto pb-1">
-                                {hotspots.map((h, i) => (
-                                    <Badge key={i} className={h.demand_level === 'HIGH' ? 'bg-pink-900/50 text-pink-400 border-pink-400' : ''}>
-                                        Zone {h.zone_id}: {h.demand_level}
+                            <span className="font-bold text-xs uppercase tracking-wider text-text-primary mr-2">Hotspots</span>
+                            <div className="flex gap-1.5">
+                                {hotspots.slice(0,2).map((h, i) => (
+                                    <Badge key={i} variant={h.demand_level === 'HIGH' ? 'secondary' : 'primary'} className="scale-90 origin-left">
+                                        Z{h.zone_id}
                                     </Badge>
                                 ))}
                             </div>
-                        </Card>
+                        </div>
                     </div>
                 )}
             </div>
 
             {/* Incoming Ride Overlay */}
             {incomingRide && (
-                <div className="absolute inset-x-4 bottom-4 z-20">
-                    <Card className="border-[var(--neon-blue)] shadow-[0_0_20px_rgba(0,243,255,0.3)] animate-pulse">
-                        <div className="text-center mb-4">
-                            <h3 className="text-[var(--neon-blue)] font-bold text-lg uppercase tracking-wider mb-1">New Ride Request</h3>
-                            <div className="text-3xl font-light">₹{Number(incomingRide.total_fare).toFixed(2)}</div>
-                            <div className="text-gray-400 text-sm">{incomingRide.distance_km} km</div>
+                <div className="absolute inset-x-0 bottom-0 z-30 bg-bg-app/50 backdrop-blur-sm h-full flex flex-col justify-end">
+                    <Card className="rounded-t-[32px] rounded-b-none border-none shadow-[0_-10px_40px_rgba(0,0,0,0.5)] p-6 pt-8 animate-in slide-in-from-bottom-full duration-300">
+                        <div className="text-center mb-6">
+                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-primary glow-primary animate-pulse">
+                                <MapIcon size={32} />
+                            </div>
+                            <h3 className="text-primary font-bold text-xs uppercase tracking-[0.2em] mb-2">New Ride Request</h3>
+                            <div className="text-5xl font-light text-text-primary tracking-tight">₹{Number(incomingRide.total_fare).toFixed(2)}</div>
+                            <div className="text-text-muted text-sm font-medium mt-2">{incomingRide.distance_km} km • 8 min away</div>
                         </div>
                         
-                        <div className="flex flex-col gap-2 mb-6">
-                            <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 rounded-full bg-[var(--neon-pink)]" />
-                                <div className="text-sm">{incomingRide.pickup_address}</div>
+                        <div className="bg-surface-elevated rounded-2xl p-4 border border-border-subtle mb-6">
+                            <div className="flex items-start gap-4 mb-4 relative">
+                                <div className="absolute left-[7px] top-5 bottom-0 w-0.5 bg-border-subtle -z-10"></div>
+                                <div className="w-4 h-4 rounded-full bg-primary flex-shrink-0 mt-0.5 glow-primary" />
+                                <div>
+                                    <div className="text-xs text-text-muted font-bold uppercase tracking-wider mb-1">Pickup</div>
+                                    <div className="text-sm font-bold">{incomingRide.pickup_address}</div>
+                                </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 rounded-full bg-[var(--neon-blue)]" />
-                                <div className="text-sm">{incomingRide.drop_address}</div>
+                            <div className="flex items-start gap-4">
+                                <div className="w-4 h-4 rounded-full bg-secondary flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <div className="text-xs text-text-muted font-bold uppercase tracking-wider mb-1">Dropoff</div>
+                                    <div className="text-sm font-bold">{incomingRide.drop_address}</div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div className="flex gap-4">
-                            <Button variant="secondary" className="flex-1" onClick={() => setIncomingRide(null)}>Decline</Button>
-                            <Button className="flex-1" onClick={handleAccept}>Accept</Button>
+                        <div className="flex gap-4 pb-4">
+                            <Button variant="secondary" className="flex-1 py-4 text-lg" onClick={() => setIncomingRide(null)}>Decline</Button>
+                            <Button className="flex-1 py-4 text-lg" onClick={handleAccept}>Accept</Button>
                         </div>
                     </Card>
                 </div>
@@ -127,11 +139,13 @@ export const Home: React.FC = () => {
             
             {/* Offline overlay */}
             {!isOnline && (
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-10 flex items-center justify-center">
+                <div className="absolute inset-0 bg-bg-app/80 backdrop-blur-md z-10 flex items-center justify-center">
                     <div className="text-center">
-                        <Power size={48} className="mx-auto text-gray-500 mb-4" />
-                        <h2 className="text-xl font-bold tracking-widest text-gray-300">YOU ARE OFFLINE</h2>
-                        <p className="text-gray-500 text-sm mt-2">Go online to receive ride requests</p>
+                        <div className="w-20 h-20 rounded-full bg-surface-elevated flex items-center justify-center mx-auto mb-6 border border-border-subtle">
+                            <Power size={32} className="text-text-muted" />
+                        </div>
+                        <h2 className="text-2xl font-bold tracking-tight text-text-primary mb-2">You are Offline</h2>
+                        <p className="text-text-muted text-sm font-medium">Tap "Go Online" to receive ride requests</p>
                     </div>
                 </div>
             )}

@@ -21,34 +21,36 @@ export const Login: React.FC = () => {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-6">
-            <div className="text-[var(--neon-pink)] mb-8 flex flex-col items-center">
-                <MapPin size={48} />
-                <h1 className="text-3xl font-bold mt-2 tracking-widest uppercase">RAAHI</h1>
-                <span className="text-[var(--neon-blue)] tracking-widest text-sm">RIDER PORTAL</span>
+            <div className="mb-10 flex flex-col items-center">
+                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 text-primary glow-primary">
+                    <MapPin size={32} />
+                </div>
+                <h1 className="text-3xl font-bold tracking-tight">RAAHI</h1>
+                <span className="text-text-muted text-sm font-medium tracking-widest mt-1 uppercase">Rider Portal</span>
             </div>
             
-            <Card className="w-full">
-                <form onSubmit={handleLogin} className="flex flex-col gap-4">
-                    {error && <div className="text-red-500 text-sm font-bold">{error}</div>}
-                    <div>
-                        <label className="text-xs text-[var(--text-light)] uppercase tracking-wide">Email</label>
+            <Card className="w-full max-w-sm">
+                <form onSubmit={handleLogin} className="flex flex-col gap-5">
+                    {error && <div className="text-secondary bg-secondary/10 p-3 rounded-xl text-sm font-bold text-center">{error}</div>}
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs text-text-muted font-bold uppercase tracking-wider">Email</label>
                         <input 
                             type="email" 
-                            className="w-full bg-[#11151c] border border-gray-800 rounded p-3 mt-1 text-white focus:border-[var(--neon-blue)] outline-none" 
+                            className="w-full bg-bg-app border border-border-subtle rounded-xl p-4 text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" 
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-                    <div>
-                        <label className="text-xs text-[var(--text-light)] uppercase tracking-wide">Password</label>
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs text-text-muted font-bold uppercase tracking-wider">Password</label>
                         <input 
                             type="password" 
-                            className="w-full bg-[#11151c] border border-gray-800 rounded p-3 mt-1 text-white focus:border-[var(--neon-blue)] outline-none" 
+                            className="w-full bg-bg-app border border-border-subtle rounded-xl p-4 text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" 
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <Button type="submit" fullWidth className="mt-4">Login as Rider</Button>
+                    <Button type="submit" fullWidth className="mt-2 text-lg">Continue as Rider</Button>
                 </form>
             </Card>
         </div>

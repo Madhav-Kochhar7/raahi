@@ -65,10 +65,10 @@ export const MapView: React.FC<MapViewProps> = ({ lat, lng, zoom = 14, className
                     position={{ lat, lng }} 
                     icon={{
                         path: 'M -5,0 A 5,5 0 1,1 5,0 A 5,5 0 1,1 -5,0',
-                        fillColor: '#FF0055',
+                        fillColor: '#C6FF00', // Lime
                         fillOpacity: 1,
-                        strokeColor: '#FFFFFF',
-                        strokeWeight: 2,
+                        strokeColor: 'rgba(198, 255, 0, 0.3)', // Lime halo
+                        strokeWeight: 6,
                         scale: 1.5
                     }} 
                 />
@@ -82,10 +82,10 @@ export const MapView: React.FC<MapViewProps> = ({ lat, lng, zoom = 14, className
                         title={m.title}
                         icon={{
                             path: 'M -4,0 A 4,4 0 1,1 4,0 A 4,4 0 1,1 -4,0',
-                            fillColor: '#00F3FF',
+                            fillColor: '#FF6B3D', // Coral
                             fillOpacity: 1,
-                            strokeColor: '#FFFFFF',
-                            strokeWeight: 1,
+                            strokeColor: 'rgba(255, 107, 61, 0.3)',
+                            strokeWeight: 4,
                             scale: 1.2
                         }}
                     />

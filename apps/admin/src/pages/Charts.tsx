@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button } from 'shared';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Activity, BrainCircuit } from 'lucide-react';
+import { Activity, BrainCircuit, Sparkles } from 'lucide-react';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -30,45 +30,72 @@ export const Charts: React.FC = () => {
     };
 
     return (
-        <div className="p-8">
-            <h1 className="text-3xl font-bold tracking-widest text-[var(--neon-blue)] mb-8 uppercase flex items-center gap-3">
-                <Activity size={32} />
-                ML Demand Forecasting
-            </h1>
+        <div className="p-10 max-w-7xl mx-auto flex flex-col h-full min-h-screen">
+            <div className="flex justify-between items-end mb-10">
+                <div>
+                    <h1 className="text-4xl font-bold tracking-tight mb-2">ML Demand Forecasting</h1>
+                    <p className="text-text-muted font-medium">Predictive analytics powered by RAAHI ML.</p>
+                </div>
+                <div className="bg-primary/10 text-primary px-4 py-2 rounded-full border border-primary/30 flex items-center gap-2 font-bold text-sm tracking-wider uppercase glow-primary">
+                    <Activity size={16} /> Live Data
+                </div>
+            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <Card className="border-[var(--neon-blue)] h-96">
-                    <h2 className="text-lg font-bold mb-4 uppercase text-[var(--neon-blue)]">Predicted Demand by Zone</h2>
-                    <ResponsiveContainer width="100%" height="80%">
-                        <BarChart data={metrics}>
-                            <XAxis dataKey="zone_id" stroke="#8884d8" />
-                            <YAxis stroke="#8884d8" />
-                            <Tooltip contentStyle={{ backgroundColor: '#1f2833', border: '1px solid #00f3ff' }}/>
-                            <Bar dataKey="predicted_demand" fill="var(--neon-blue)" name="Predicted Rides" />
-                        </BarChart>
-                    </ResponsiveContainer>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 pb-10">
+                <Card className="flex flex-col border-border-subtle hover:border-primary/30 transition-colors h-[600px]">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                            <Activity size={20} />
+                        </div>
+                        <h2 className="text-xl font-bold">Predicted Demand by Zone</h2>
+                    </div>
+                    
+                    <div className="flex-1 w-full min-h-0 relative">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={metrics} margin={{ top: 20, right: 20, bottom: 40, left: 0 }}>
+                                <XAxis dataKey="zone_id" stroke="#4A5568" tick={{ fill: '#A0AEC0' }} dy={10} />
+                                <YAxis stroke="#4A5568" tick={{ fill: '#A0AEC0' }} dx={-10} />
+                                <Tooltip 
+                                    contentStyle={{ backgroundColor: '#0B0F17', border: '1px solid #1E293B', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)' }}
+                                    itemStyle={{ color: '#C6FF00' }}
+                                    labelStyle={{ color: '#94A3B8', marginBottom: '4px' }}
+                                />
+                                <Bar dataKey="predicted_demand" fill="var(--color-primary)" name="Predicted Rides" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
                 </Card>
                 
-                <Card className="border-[var(--neon-pink)] h-96">
-                    <h2 className="text-lg font-bold mb-4 uppercase text-[var(--neon-pink)] flex items-center justify-between">
-                        <div>
-                            <BrainCircuit className="inline mr-2" size={20}/>
-                            Demand Explanation
-                        </div>
-                        <Button onClick={explainDemand} disabled={loading} variant="secondary" className="text-xs px-3 py-1">
-                            Ask OpenAI
-                        </Button>
-                    </h2>
+                <Card className="flex flex-col border-border-subtle hover:border-secondary/30 transition-colors h-[600px] relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none group-hover:bg-secondary/10 transition-colors"></div>
                     
-                    <div className="bg-[#11151c] border border-gray-800 rounded p-4 h-[calc(100%-4rem)] overflow-y-auto text-gray-300 leading-relaxed font-mono text-sm">
+                    <div className="flex items-center justify-between mb-8 relative z-10">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center shadow-[0_0_15px_rgba(255,107,61,0.2)]">
+                                <BrainCircuit size={20} />
+                            </div>
+                            <h2 className="text-xl font-bold">AI Analysis</h2>
+                        </div>
+                        <Button onClick={explainDemand} disabled={loading} variant="secondary" className="text-xs px-4 py-2 h-auto flex items-center gap-2 bg-secondary/10 hover:bg-secondary/20 border-secondary/30">
+                            <Sparkles size={14} /> Analyze
+                        </Button>
+                    </div>
+                    
+                    <div className="flex-1 bg-bg-app border border-border-subtle rounded-2xl p-6 overflow-y-auto relative z-10">
                         {loading ? (
-                            <div className="animate-pulse flex items-center gap-2 text-[var(--neon-pink)]">
-                                <BrainCircuit className="animate-spin" size={16} /> Analyzing model weights...
+                            <div className="flex flex-col items-center justify-center h-full gap-4 text-secondary">
+                                <div className="w-12 h-12 rounded-full border-2 border-secondary border-t-transparent animate-spin"></div>
+                                <div className="font-bold text-sm tracking-widest uppercase animate-pulse">Analyzing model weights...</div>
                             </div>
                         ) : explanation ? (
-                            explanation
+                            <div className="text-text-primary leading-relaxed font-medium">
+                                {explanation}
+                            </div>
                         ) : (
-                            <span className="text-gray-600">Click "Ask OpenAI" to generate an AI explanation of current demand patterns and actionable insights.</span>
+                            <div className="flex flex-col items-center justify-center h-full text-center gap-4 text-text-muted">
+                                <BrainCircuit size={48} className="opacity-20" />
+                                <span className="max-w-xs font-medium">Click "Analyze" to generate an AI explanation of current demand patterns and actionable insights.</span>
+                            </div>
                         )}
                     </div>
                 </Card>

@@ -1,75 +1,35 @@
-:root {
-  --neon-blue: #00f3ff;
-  --neon-pink: #ff00ea;
-  --dark-bg: #0b0c10;
-  --dark-panel: #1f2833;
-  --text-light: #c5c6c7;
-  --text-bright: #ffffff;
+@import "tailwindcss";
+
+@theme {
+  --color-bg-app: #0A0E14;
+  --color-bg-surface: #111821;
+  --color-bg-surface-elevated: #151D28;
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
   
-  --border-neon-blue: 1px solid var(--neon-blue);
-  --box-shadow-blue: 0 0 10px rgba(0, 243, 255, 0.5);
+  --color-primary: #C6FF00;
+  --color-primary-dark: #9ECC00;
+  --color-secondary: #FF6B3D;
   
-  --border-neon-pink: 1px solid var(--neon-pink);
-  --box-shadow-pink: 0 0 10px rgba(255, 0, 234, 0.5);
+  --color-text-primary: #FFFFFF;
+  --color-text-muted: #8A94A6;
+  
+  --font-sans: "Outfit", sans-serif;
 }
 
-body {
-  background-color: var(--dark-bg);
-  color: var(--text-light);
-  font-family: 'Inter', -apple-system, sans-serif;
-  margin: 0;
-  padding: 0;
+@layer base {
+  body {
+    background-color: var(--color-bg-app);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+  }
 }
 
-.raahi-btn {
-  background-color: transparent;
-  color: var(--neon-blue);
-  border: var(--border-neon-blue);
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--box-shadow-blue);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.raahi-btn:hover {
-  background-color: var(--neon-blue);
-  color: var(--dark-bg);
-  box-shadow: 0 0 20px rgba(0, 243, 255, 0.8);
-}
-
-.raahi-btn-secondary {
-  color: var(--neon-pink);
-  border: var(--border-neon-pink);
-  box-shadow: var(--box-shadow-pink);
-}
-
-.raahi-btn-secondary:hover {
-  background-color: var(--neon-pink);
-  color: var(--dark-bg);
-  box-shadow: 0 0 20px rgba(255, 0, 234, 0.8);
-}
-
-.raahi-card {
-  background-color: var(--dark-panel);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.05);
-}
-
-.raahi-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  background-color: rgba(0, 243, 255, 0.1);
-  color: var(--neon-blue);
-  border: 1px solid var(--neon-blue);
+@layer utilities {
+  .glow-primary {
+    box-shadow: 0 0 15px rgba(198, 255, 0, 0.2);
+  }
+  
+  .glow-primary-strong {
+    box-shadow: 0 0 20px rgba(198, 255, 0, 0.4);
+  }
 }

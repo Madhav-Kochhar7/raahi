@@ -12,7 +12,7 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 function App() {
     return (
-        <div className="rider-app-container">
+        <div className="min-h-screen bg-bg-app text-text-primary selection:bg-primary/30 selection:text-primary">
             <BrowserRouter>
                 <Routes>
                     <Route path="/login" element={<Login />} />
