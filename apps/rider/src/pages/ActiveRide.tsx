@@ -51,7 +51,7 @@ export const ActiveRide: React.FC = () => {
             <div className="bg-[var(--dark-panel)] border-t border-[var(--neon-blue)] shadow-[0_-5px_20px_rgba(0,243,255,0.2)] rounded-t-2xl p-6">
                 <div className="flex justify-between items-center mb-6">
                     <div>
-                        <div className="text-xl font-bold">₹{ride.total_fare.toFixed(2)}</div>
+                        <div className="text-xl font-bold">₹{Number(ride.total_fare).toFixed(2)}</div>
                         <div className="text-sm text-gray-400">Cash Payment</div>
                     </div>
                     <div className="text-right">

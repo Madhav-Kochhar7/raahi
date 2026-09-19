@@ -102,7 +102,7 @@ export const Home: React.FC = () => {
                     <Card className="border-[var(--neon-blue)] shadow-[0_0_20px_rgba(0,243,255,0.3)] animate-pulse">
                         <div className="text-center mb-4">
                             <h3 className="text-[var(--neon-blue)] font-bold text-lg uppercase tracking-wider mb-1">New Ride Request</h3>
-                            <div className="text-3xl font-light">₹{incomingRide.total_fare.toFixed(2)}</div>
+                            <div className="text-3xl font-light">₹{Number(incomingRide.total_fare).toFixed(2)}</div>
                             <div className="text-gray-400 text-sm">{incomingRide.distance_km} km</div>
                         </div>
                         

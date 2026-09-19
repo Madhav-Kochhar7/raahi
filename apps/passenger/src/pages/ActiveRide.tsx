@@ -30,7 +30,7 @@ export const ActiveRide: React.FC = () => {
             <div className="flex flex-col items-center justify-center min-h-screen p-6">
                 <div className="text-center mb-8">
                     <h1 className="text-2xl font-bold text-[var(--neon-blue)] tracking-widest uppercase mb-2">Ride Completed</h1>
-                    <div className="text-3xl font-light">₹{ride.total_fare.toFixed(2)}</div>
+                    <div className="text-3xl font-light">₹{Number(ride.total_fare).toFixed(2)}</div>
                 </div>
                 
                 <div className="w-full bg-[var(--dark-panel)] p-6 rounded-xl border border-gray-800 flex flex-col items-center gap-6">
