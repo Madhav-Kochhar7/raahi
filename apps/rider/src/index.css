@@ -1,0 +1,17 @@
+@import 'shared/src/styles/theme.css';
+
+/* Tailwind overrides / globals if needed, but we're mostly using the shared theme variables */
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-bright);
+}
+
+.rider-app-container {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    border-left: 1px solid rgba(255,255,255,0.05);
+    border-right: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    overflow-x: hidden;
+}

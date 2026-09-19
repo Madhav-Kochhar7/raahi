@@ -1,0 +1,1 @@
+- Created monorepo structure and initial project plan.

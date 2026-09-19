@@ -1,0 +1,12 @@
+@import 'shared/src/styles/theme.css';
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-bright);
+}
+
+.admin-app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100vh;
+}

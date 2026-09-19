@@ -1,0 +1,16 @@
+{
+  "scenario": "Automation Impact - Rider Positioning",
+  "disclaimer": "Simulated on synthetic demo data. Not a real-world measurement.",
+  "metrics": {
+    "passenger_wait_time_mins": {
+      "before": 14.7,
+      "after": 4.1,
+      "improvement": 10.6
+    },
+    "rider_idle_time_pct": {
+      "before": 49.8,
+      "after": 22.6,
+      "improvement": 27.2
+    }
+  }
+}

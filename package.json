@@ -1,0 +1,28 @@
+{
+  "name": "raahi",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "backend"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:passenger": "npm run dev --workspace=apps/passenger",
+    "dev:rider": "npm run dev --workspace=apps/rider",
+    "dev:admin": "npm run dev --workspace=apps/admin",
+    "dev:prediction": "cd prediction-service && if [ ! -d venv ]; then python3 -m venv venv && ./venv/bin/pip install -r requirements.txt; fi && ./venv/bin/uvicorn app:app --reload --port 8000",
+    "dev": "npx concurrently -c \"blue,green,yellow,magenta,cyan\" \"npm:dev:backend\" \"npm:dev:passenger\" \"npm:dev:rider\" \"npm:dev:admin\" \"npm:dev:prediction\"",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@neon/config": "^1.7.2",
+    "@neon/env": "^1.4.3",
+    "neon": "^5.0.0"
+  }
+}
