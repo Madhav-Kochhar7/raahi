@@ -5,7 +5,7 @@ import { Navigation } from 'lucide-react';
 
 export const Login: React.FC = () => {
     const [email, setEmail] = useState('passenger@demo.com');
-    const [password, setPassword] = useState('Demo@1234');
+    const [password, setPassword] = useState('password123');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
