@@ -10,6 +10,7 @@
   },
   "keywords": [],
   "dependencies": {
+    "@react-google-maps/api": "^2.20.8",
     "axios": "^1.7.0",
     "lucide-react": "^0.400.0",
     "react": "^18.3.0",

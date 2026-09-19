@@ -1,4 +1,5 @@
 import React from 'react';
+import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
 interface MapViewProps {
     lat: number;
@@ -8,38 +9,88 @@ interface MapViewProps {
     markers?: Array<{ lat: number; lng: number; title?: string }>;
 }
 
+declare var process: any;
+
+const darkMapStyle = [
+  { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#d59563' }] },
+  { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#d59563' }] },
+  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#263c3f' }] },
+  { featureType: 'poi.park', elementType: 'labels.text.fill', stylers: [{ color: '#6b9a76' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#38414e' }] },
+  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#212a37' }] },
+  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#9ca5b3' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#746855' }] },
+  { featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{ color: '#1f2835' }] },
+  { featureType: 'road.highway', elementType: 'labels.text.fill', stylers: [{ color: '#f3d19c' }] },
+  { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#2f3948' }] },
+  { featureType: 'transit.station', elementType: 'labels.text.fill', stylers: [{ color: '#d59563' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#17263c' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#515c6d' }] },
+  { featureType: 'water', elementType: 'labels.text.stroke', stylers: [{ color: '#17263c' }] }
+];
+
 export const MapView: React.FC<MapViewProps> = ({ lat, lng, zoom = 14, className = '', markers = [] }) => {
-    // Basic mock implementation using an iframe for demo. 
-    // In production, use @react-google-maps/api.
-    // For free/demo purposes, we just embed an OSM or raw map if no API key is provided,
-    // or simulate a map canvas with CSS. Let's build a stylized mock map for the sleek look.
+    const { isLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: process.env.VITE_GOOGLE_MAPS_API_KEY || ''
+    });
+
+    if (!isLoaded) {
+        return (
+            <div className={`relative overflow-hidden rounded-xl border border-[var(--neon-blue)] ${className} flex items-center justify-center`} style={{ minHeight: '300px', backgroundColor: '#11151c' }}>
+                <span className="text-[var(--neon-blue)] opacity-50 font-mono text-sm tracking-widest">LOADING MAP...</span>
+            </div>
+        );
+    }
 
     return (
-        <div className={`relative overflow-hidden rounded-xl border border-[var(--neon-blue)] ${className}`} style={{ minHeight: '300px', backgroundColor: '#11151c' }}>
-            {/* Simulated Map Grid Background */}
-            <div className="absolute inset-0 opacity-20" 
-                 style={{ 
-                     backgroundImage: 'linear-gradient(rgba(0, 243, 255, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.2) 1px, transparent 1px)', 
-                     backgroundSize: '20px 20px' 
-                 }} />
-            
-            <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[var(--neon-blue)] opacity-50 font-mono text-sm tracking-widest">MAP FEED ACTIVE</span>
-            </div>
-            
-            {/* Simulated Center Marker */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[var(--neon-pink)] shadow-[0_0_15px_var(--neon-pink)] z-10" />
-            
-            {/* Simulated Additional Markers */}
-            {markers.map((m, i) => (
-                <div key={i} className="absolute w-3 h-3 rounded-full bg-[var(--neon-blue)] shadow-[0_0_10px_var(--neon-blue)]"
-                     style={{ 
-                         // Very rough translation of lat/lng to percentage for demo effect
-                         left: `${50 + (m.lng - lng) * 1000}%`, 
-                         top: `${50 - (m.lat - lat) * 1000}%` 
-                     }}
+        <div className={`relative overflow-hidden rounded-xl border border-[var(--neon-blue)] ${className}`} style={{ minHeight: '300px' }}>
+            {/* @ts-ignore */}
+            <GoogleMap
+                mapContainerStyle={{ width: '100%', height: '100%', minHeight: '300px' }}
+                center={{ lat, lng }}
+                zoom={zoom}
+                options={{
+                    styles: darkMapStyle,
+                    disableDefaultUI: true,
+                    zoomControl: true,
+                }}
+            >
+                {/* Center marker for passenger/driver */}
+                {/* @ts-ignore */}
+                <Marker 
+                    position={{ lat, lng }} 
+                    icon={{
+                        path: 'M -5,0 A 5,5 0 1,1 5,0 A 5,5 0 1,1 -5,0',
+                        fillColor: '#FF0055',
+                        fillOpacity: 1,
+                        strokeColor: '#FFFFFF',
+                        strokeWeight: 2,
+                        scale: 1.5
+                    }} 
                 />
-            ))}
+
+                {/* Additional markers */}
+                {markers.map((m, i) => (
+                    /* @ts-ignore */
+                    <Marker 
+                        key={i} 
+                        position={{ lat: m.lat, lng: m.lng }} 
+                        title={m.title}
+                        icon={{
+                            path: 'M -4,0 A 4,4 0 1,1 4,0 A 4,4 0 1,1 -4,0',
+                            fillColor: '#00F3FF',
+                            fillOpacity: 1,
+                            strokeColor: '#FFFFFF',
+                            strokeWeight: 1,
+                            scale: 1.2
+                        }}
+                    />
+                ))}
+            </GoogleMap>
         </div>
     );
 };

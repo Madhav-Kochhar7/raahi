@@ -8,7 +8,8 @@ export default defineConfig({
     dedupe: ['react', 'react-dom']
   },
   define: {
-    'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL)
+    'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL),
+    'process.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(process.env.VITE_GOOGLE_MAPS_API_KEY)
   },
   server: {
     port: 5175,

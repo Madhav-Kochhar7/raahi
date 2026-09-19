@@ -66,5 +66,5 @@ export class ApiClient {
     async getMetrics() { return (await this.client.get('/api/demand/metrics')).data; }
 }
 
-// @ts-ignore
-export const api = new ApiClient((typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL) || 'http://localhost:5000');
+declare var process: any;
+export const api = new ApiClient(process.env.VITE_API_URL || 'http://localhost:5000');
