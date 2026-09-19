@@ -14,7 +14,7 @@ export const PassDashboard: React.FC = () => {
     const jumpClock = async () => {
         setLoading(true);
         try {
-            const res = await axios.post(`${API_URL}/admin/demo/jump-clock`);
+            const res = await axios.post(`${API_URL}/api/admin/demo/jump-clock`);
             setStatus(res.data.message);
         } catch(e: any) {
             setStatus('Error: ' + e.message);
@@ -25,8 +25,8 @@ export const PassDashboard: React.FC = () => {
     const dispatchTrip = async () => {
         setLoading(true);
         try {
-            const res = await axios.post(`${API_URL}/admin/demo/dispatch-trip/1`); // Hardcoded trip ID 1 for demo
-            setStatus('Trip dispatched! Ride ID: ' + res.data.rideId);
+            const res = await axios.post(`${API_URL}/api/admin/demo/dispatch-trip/1`);
+            setStatus(`Dispatch result: ${JSON.stringify(res.data)}`);
         } catch(e: any) {
             setStatus('Error: ' + e.message);
         }
