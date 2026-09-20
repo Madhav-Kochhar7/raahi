@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { api, Button, MapView, BottomTabBar } from 'shared';
-import { Star, Home as HomeIcon, Map as MapIcon, Wallet, UserCircle, Phone, MessageSquare, User } from 'lucide-react';
+import { Star, Home as HomeIcon, Wallet, UserCircle, Phone, MessageSquare, User } from 'lucide-react';
 
 export const ActiveRide: React.FC = () => {
     const { id } = useParams();
@@ -119,12 +119,13 @@ export const ActiveRide: React.FC = () => {
                 </div>
             </div>
 
+            {/* Bottom Navigation */}
             <BottomTabBar 
-                activeTab="rides"
-                onTabChange={(id) => navigate(id === 'home' ? '/' : id === 'profile' ? '/chat' : '/')}
+                activeTab="home"
+                onTabChange={(id) => navigate(id === 'home' ? '/' : `/${id}`)}
                 tabs={[
                     { id: 'home', label: 'Home', icon: <HomeIcon size={22} /> },
-                    { id: 'rides', label: 'Rides', icon: <MapIcon size={22} /> },
+                    { id: 'passes', label: 'Passes', icon: <Star size={22} /> },
                     { id: 'wallet', label: 'Wallet', icon: <Wallet size={22} /> },
                     { id: 'profile', label: 'You', icon: <UserCircle size={22} /> },
                 ]}

@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@source "../components";
 @theme {
   --color-bg-app: #0A0E14;
   --color-bg-surface: #111821;
